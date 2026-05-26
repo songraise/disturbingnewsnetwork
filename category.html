@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>DNN Category</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#050505;
+color:#fff;
+font-family:'Inter',sans-serif;
+overflow-x:hidden;
+}
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:
+radial-gradient(circle at top right, rgba(180,0,0,0.12), transparent 30%),
+radial-gradient(circle at bottom left, rgba(255,0,0,0.08), transparent 25%);
+pointer-events:none;
+z-index:-1;
+}
+
+a{
+text-decoration:none;
+color:inherit;
+}
+
+.container{
+width:92%;
+max-width:1450px;
+margin:auto;
+}
+
+header{
+position:sticky;
+top:0;
+z-index:999;
+background:rgba(0,0,0,0.92);
+backdrop-filter:blur(8px);
+border-bottom:1px solid #1f1f1f;
+}
+
+.nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 0;
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:14px;
+}
+
+.logo-box{
+font-family:'Oswald',sans-serif;
+font-size:54px;
+font-weight:700;
+line-height:1;
+color:#fff;
+}
+
+.logo-box span{
+color:#e22121;
+}
+
+.logo-text{
+font-family:'Oswald',sans-serif;
+line-height:1;
+}
+
+.logo-text h1{
+font-size:22px;
+letter-spacing:1px;
+}
+
+.logo-text p{
+font-size:18px;
+color:#e22121;
+}
+
+.nav-links{
+display:flex;
+gap:28px;
+font-weight:600;
+font-size:14px;
+text-transform:uppercase;
+}
+
+.nav-links a{
+opacity:0.82;
+transition:0.25s;
+}
+
+.nav-links a:hover{
+opacity:1;
+color:#ff3d3d;
+}
+
+.hero{
+padding:90px 0 60px;
+border-bottom:1px solid #171717;
+background:
+linear-gradient(to bottom, rgba(0,0,0,0.88), rgba(0,0,0,0.94)),
+url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1800&auto=format&fit=crop') center/cover;
+}
+
+.hero h2{
+font-family:'Oswald',sans-serif;
+font-size:84px;
+line-height:0.95;
+text-transform:uppercase;
+margin-bottom:20px;
+}
+
+.hero h2 span{
+color:#ff2a2a;
+}
+
+.hero p{
+font-size:22px;
+line-height:1.7;
+color:#cfcfcf;
+max-width:800px;
+}
+
+.section{
+padding:70px 0;
+}
+
+.stories-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:28px;
+}
+
+.story-card{
+background:#0b0b0b;
+border:1px solid #1b1b1b;
+border-radius:10px;
+overflow:hidden;
+transition:0.3s;
+cursor:pointer;
+}
+
+.story-card:hover{
+transform:translateY(-6px);
+border-color:#ff2a2a;
+box-shadow:0 25px 40px rgba(0,0,0,0.45);
+}
+
+.story-image{
+height:220px;
+overflow:hidden;
+position:relative;
+}
+
+.story-image img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.story-category{
+position:absolute;
+top:14px;
+left:14px;
+background:#e11d1d;
+padding:8px 12px;
+font-size:12px;
+font-weight:800;
+border-radius:4px;
+text-transform:uppercase;
+letter-spacing:1px;
+}
+
+.story-content{
+padding:24px;
+}
+
+.story-title{
+font-family:'Oswald',sans-serif;
+font-size:34px;
+line-height:1.05;
+margin-bottom:18px;
+}
+
+.story-summary{
+color:#c6c6c6;
+font-size:16px;
+line-height:1.7;
+margin-bottom:22px;
+}
+
+.dnn-angle{
+background:#111;
+border-left:4px solid #ff2a2a;
+padding:16px;
+margin-bottom:22px;
+border-radius:4px;
+}
+
+.dnn-angle strong{
+display:block;
+margin-bottom:8px;
+font-size:14px;
+text-transform:uppercase;
+color:#ff3b3b;
+}
+
+.score{
+font-size:32px;
+font-weight:800;
+color:#ff2a2a;
+margin-bottom:18px;
+}
+
+.meta{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+color:#999;
+padding-top:16px;
+border-top:1px solid #1f1f1f;
+}
+
+.loading{
+padding:80px;
+text-align:center;
+font-size:22px;
+color:#999;
+}
+
+.error{
+padding:30px;
+background:#2a0b0b;
+border:1px solid #661818;
+border-radius:8px;
+color:#ffb4b4;
+}
+
+footer{
+padding:60px 0;
+background:#040404;
+border-top:1px solid #151515;
+text-align:center;
+color:#777;
+}
+
+@media(max-width:900px){
+
+.hero h2{
+font-size:58px;
+}
+
+}
+
+@media(max-width:700px){
+
+.nav-links{
+display:none;
+}
+
+.hero h2{
+font-size:44px;
+}
+
+.hero p{
+font-size:18px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="container nav">
+
+<a href="index.html" class="logo">
+
+<div class="logo-box">
+D<span>NN</span>
+</div>
+
+<div class="logo-text">
+<h1>DISTURBING</h1>
+<p>NEWS NETWORK</p>
+</div>
+
+</a>
+
+<nav class="nav-links">
+
+<a href="index.html">Home</a>
+
+<a href="category.html?name=Politics">Politics</a>
+
+<a href="category.html?name=Crime">Crime</a>
+
+<a href="category.html?name=Business">Business</a>
+
+<a href="category.html?name=Technology">Technology</a>
+
+<a href="category.html?name=World">World</a>
+
+<a href="category.html?name=Health">Health</a>
+
+</nav>
+
+</div>
+
+</header>
+
+<section class="hero">
+
+<div class="container">
+
+<h2>
+DISTURBING<br>
+<span id="categoryName">CATEGORY</span>
+</h2>
+
+<p id="categoryDescription">
+Loading category...
+</p>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="container">
+
+<div id="storiesGrid" class="stories-grid">
+
+<div class="loading">
+Loading disturbing stories...
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<footer>
+© 2026 Disturbing News Network
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL = "https://egxkcdhrappdjzskwddq.supabase.co";
+
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVneGtjZGhyYXBwZGp6c2t3ZGRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzI2MjEsImV4cCI6MjA5NTMwODYyMX0.OVeebryr3Ofyasmzz-rbi9g_t0CHE2Fx7YiOnyR5Qss";
+
+const supabaseClient = supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
+
+const params = new URLSearchParams(window.location.search);
+
+const category =
+params.get("name") || "News";
+
+document.getElementById("categoryName").innerText =
+category.toUpperCase();
+
+const descriptions = {
+Politics:"Power, corruption, institutional instability, and political manipulation.",
+Crime:"Fraud, scams, violence, cybercrime, and modern criminal behavior.",
+Business:"Economic instability, layoffs, corporate manipulation, and market absurdity.",
+Technology:"AI, surveillance, automation, social media, and the future of control.",
+World:"Global instability, strange international developments, and societal shifts.",
+Health:"Medical systems, mental health, addiction, and disturbing healthcare trends."
+};
+
+document.getElementById("categoryDescription").innerText =
+descriptions[category] || "Disturbing developments shaping modern society.";
+
+const storiesGrid =
+document.getElementById("storiesGrid");
+
+const fallbackImage =
+"https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200&auto=format&fit=crop";
+
+async function loadStories(){
+
+const { data, error } =
+await supabaseClient
+.from("stories")
+.select("*")
+.eq("published", true)
+.eq("category", category)
+.order("created_at", { ascending:false })
+.limit(24);
+
+if(error){
+
+storiesGrid.innerHTML = `
+<div class="error">
+Failed to load stories.
+</div>
+`;
+
+console.error(error);
+return;
+}
+
+if(!data || data.length === 0){
+
+storiesGrid.innerHTML = `
+<div class="error">
+No stories found for this category.
+</div>
+`;
+
+return;
+}
+
+storiesGrid.innerHTML = "";
+
+data.forEach(story => {
+
+const image =
+story.image_url ||
+story.source_image_url ||
+fallbackImage;
+
+const card =
+document.createElement("div");
+
+card.className = "story-card";
+
+card.addEventListener("click", () => {
+window.location.href =
+`story.html?id=${story.id}`;
+});
+
+card.innerHTML = `
+
+<div class="story-image">
+
+<img src="${image}">
+
+<div class="story-category">
+${story.category || "News"}
+</div>
+
+</div>
+
+<div class="story-content">
+
+<h2 class="story-title">
+${story.title || "Untitled"}
+</h2>
+
+<p class="story-summary">
+${story.summary || ""}
+</p>
+
+<div class="dnn-angle">
+
+<strong>DNN Angle</strong>
+
+${story.why_disturbing || "This story reflects another unsettling shift in modern society."}
+
+</div>
+
+<div class="score">
+${story.disturbing_score || "8.4"}/10
+</div>
+
+<div class="meta">
+
+<div>
+${story.source_name || "Unknown"}
+</div>
+
+<div>
+${new Date(story.created_at).toLocaleDateString()}
+</div>
+
+</div>
+
+</div>
+`;
+
+storiesGrid.appendChild(card);
+
+});
+
+}
+
+loadStories();
+
+</script>
+
+</body>
+</html>
