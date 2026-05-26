@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Disturbing News Network</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #080808;
+      color: #f4f4f4;
+    }
+
+    header {
+      border-bottom: 1px solid #2a2a2a;
+      padding: 20px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0d0d0d;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #e50914;
+    }
+
+    nav a {
+      color: #bbb;
+      margin-left: 20px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .hero {
+      padding: 80px 6% 60px;
+      background: linear-gradient(135deg, #111, #050505);
+      border-bottom: 1px solid #222;
+    }
+
+    .tag {
+      color: #e50914;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 13px;
+    }
+
+    h1 {
+      font-size: 58px;
+      max-width: 850px;
+      line-height: 1.02;
+      margin: 18px 0;
+    }
+
+    .hero p {
+      max-width: 650px;
+      color: #cfcfcf;
+      font-size: 20px;
+      line-height: 1.5;
+    }
+
+    .buttons {
+      margin-top: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 22px;
+      margin-right: 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .primary {
+      background: #e50914;
+      color: white;
+    }
+
+    .secondary {
+      border: 1px solid #555;
+      color: white;
+    }
+
+    .section {
+      padding: 50px 6%;
+    }
+
+    .section-title {
+      font-size: 28px;
+      margin-bottom: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: #121212;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    .category {
+      color: #e50914;
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .card h3 {
+      font-size: 22px;
+      margin: 12px 0;
+    }
+
+    .card p {
+      color: #c7c7c7;
+      line-height: 1.5;
+    }
+
+    .why {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #2c2c2c;
+      color: #ddd;
+      font-size: 15px;
+    }
+
+    .score {
+      margin-top: 18px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .score span {
+      color: #e50914;
+    }
+
+    .source {
+      display: inline-block;
+      margin-top: 14px;
+      color: #aaa;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .source:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .loading {
+      color: #aaa;
+      font-size: 18px;
+    }
+
+    .error {
+      background: #1c0b0d;
+      border: 1px solid #7a1f26;
+      padding: 18px;
+      border-radius: 12px;
+      color: #ffd6d9;
+    }
+
+    .newsletter {
+      background: #111;
+      border-top: 1px solid #222;
+      border-bottom: 1px solid #222;
+      padding: 50px 6%;
+      text-align: center;
+    }
+
+    .newsletter h2 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .newsletter p {
+      color: #cfcfcf;
+      font-size: 18px;
+    }
+
+    .newsletter input {
+      padding: 15px;
+      width: 280px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 20px;
+      margin-right: 8px;
+    }
+
+    .newsletter button {
+      padding: 15px 22px;
+      border: none;
+      border-radius: 8px;
+      background: #e50914;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .newsletter button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #signupMessage {
+      margin-top: 16px;
+      font-size: 15px;
+      color: #cfcfcf;
+    }
+
+    .success {
+      color: #8effa0 !important;
+    }
+
+    .signup-error {
+      color: #ff9aa2 !important;
+    }
+
+    footer {
+      padding: 30px 6%;
+      color: #777;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      h1 {
+        font-size: 40px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .newsletter input {
+        width: 90%;
+        margin-bottom: 10px;
+        margin-right: 0;
+      }
+
+      .newsletter button {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo"><span>D</span>NN</div>
+    <nav>
+      <a href="#">Politics</a>
+      <a href="#">Crime</a>
+      <a href="#">Business</a>
+      <a href="#">Tech</a>
+      <a href="#">Health</a>
+      <a href="#">Sports</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="tag">Disturbing News Network</div>
+    <h1>The day’s news, filtered for the stories that make you say: wait… what?</h1>
+    <p>
+      DNN tracks the strange, unsettling, and quietly disturbing stories hiding inside politics,
+      business, crime, technology, health, sports, and modern life.
+    </p>
+    <div class="buttons">
+      <a href="#feed" class="btn primary">Read Today’s Feed</a>
+      <a href="#newsletter" class="btn secondary">Get the Daily Disturbance</a>
+    </div>
+  </section>
+
+  <section class="section" id="feed">
+    <h2 class="section-title">Today’s Most Disturbing</h2>
+    <div id="storiesGrid" class="grid">
+      <p class="loading">Loading disturbing stories...</p>
+    </div>
+  </section>
+
+  <section class="newsletter" id="newsletter">
+    <h2>Get the Daily Disturbance</h2>
+    <p>Five unsettling stories. One email. Every day.</p>
+
+    <form id="signupForm">
+      <input id="emailInput" type="email" placeholder="Enter your email" required />
+      <button id="signupButton" type="submit">Join the List</button>
+    </form>
+
+    <div id="signupMessage"></div>
+  </section>
+
+  <footer>
+    © 2026 Disturbing News Network. News summaries, commentary, and unsettling patterns.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://egxkcdhrappdjzskwddq.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVneGtjZGhyYXBwZGp6c2t3ZGRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzI2MjEsImV4cCI6MjA5NTMwODYyMX0.OVeebryr3Ofyasmzz-rbi9g_t0CHE2Fx7YiOnyR5Qss
+";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const storiesGrid = document.getElementById("storiesGrid");
+    const signupForm = document.getElementById("signupForm");
+    const emailInput = document.getElementById("emailInput");
+    const signupButton = document.getElementById("signupButton");
+    const signupMessage = document.getElementById("signupMessage");
+
+    async function loadStories() {
+      const { data, error } = await supabaseClient
+        .from("stories")
+        .select("*")
+        .eq("published", true)
+        .order("disturbing_score", { ascending: false })
+        .limit(12);
+
+      if (error) {
+        storiesGrid.innerHTML = `
+          <div class="error">
+            <strong>We couldn’t load stories right now.</strong><br>
+            Check your Supabase URL, anon key, table name, and RLS policy.
+          </div>
+        `;
+        console.error(error);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        storiesGrid.innerHTML = `
+          <div class="error">
+            No published stories found. Add stories in Supabase and make sure published = true.
+          </div>
+        `;
+        return;
+      }
+
+      storiesGrid.innerHTML = data.map(story => `
+        <div class="card">
+          <div class="category">${escapeHtml(story.category || "News")}</div>
+          <h3>${escapeHtml(story.title)}</h3>
+          <p>${escapeHtml(story.summary)}</p>
+
+          ${story.why_disturbing ? `
+            <div class="why">
+              <strong>Why this disturbs us:</strong><br>
+              ${escapeHtml(story.why_disturbing)}
+            </div>
+          ` : ""}
+
+          <div class="score">
+            Disturbing Score: <span>${story.disturbing_score || "?"}/10</span>
+          </div>
+
+          ${story.source_url ? `
+            <a class="source" href="${escapeAttribute(story.source_url)}" target="_blank" rel="noopener noreferrer">
+              Source: ${escapeHtml(story.source_name || "Original report")}
+            </a>
+          ` : ""}
+        </div>
+      `).join("");
+    }
+
+    signupForm.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const email = emailInput.value.trim().toLowerCase();
+
+      if (!email) {
+        showSignupMessage("Please enter your email.", "signup-error");
+        return;
+      }
+
+      signupButton.disabled = true;
+      signupButton.textContent = "Joining...";
+      showSignupMessage("", "");
+
+      const { error } = await supabaseClient
+        .from("subscribers")
+        .insert([{ email }]);
+
+      signupButton.disabled = false;
+      signupButton.textContent = "Join the List";
+
+      if (error) {
+        if (error.code === "23505") {
+          showSignupMessage("You are already on the list.", "success");
+        } else {
+          showSignupMessage("Something went wrong. Please try again.", "signup-error");
+          console.error(error);
+        }
+        return;
+      }
+
+      emailInput.value = "";
+      showSignupMessage("You are on the list. Stay disturbed.", "success");
+    });
+
+    function showSignupMessage(message, className) {
+      signupMessage.textContent = message;
+      signupMessage.className = className;
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeAttribute(value) {
+      return String(value || "").replaceAll('"', "&quot;");
+    }
+
+    loadStories();
+  </script>
+
+</body>
+</html>
