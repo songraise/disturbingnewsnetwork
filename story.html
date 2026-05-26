@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>DNN Story</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#050505;color:#fff;font-family:'Inter',sans-serif}
+a{text-decoration:none;color:inherit}
+.container{width:92%;max-width:1000px;margin:auto}
+
+header{
+background:#000;
+border-bottom:1px solid #222;
+padding:18px 0;
+}
+
+.logo{
+font-family:'Oswald',sans-serif;
+font-size:42px;
+font-weight:700;
+}
+
+.logo span{color:#e02020}
+
+.back{
+display:inline-block;
+margin:32px 0;
+color:#ff3b3b;
+font-weight:800;
+text-transform:uppercase;
+font-size:14px;
+}
+
+.hero-img{
+width:100%;
+height:420px;
+object-fit:cover;
+border-radius:10px;
+border:1px solid #222;
+margin-bottom:28px;
+}
+
+.category{
+display:inline-block;
+background:#e02020;
+padding:8px 12px;
+border-radius:4px;
+font-size:12px;
+font-weight:800;
+text-transform:uppercase;
+letter-spacing:1px;
+margin-bottom:18px;
+}
+
+h1{
+font-family:'Oswald',sans-serif;
+font-size:64px;
+line-height:1;
+text-transform:uppercase;
+margin-bottom:22px;
+}
+
+.summary{
+font-size:22px;
+line-height:1.7;
+color:#d4d4d4;
+margin-bottom:28px;
+}
+
+.angle{
+background:#111;
+border-left:5px solid #e02020;
+padding:22px;
+border-radius:6px;
+margin:32px 0;
+font-size:19px;
+line-height:1.6;
+}
+
+.angle strong{
+display:block;
+color:#ff3b3b;
+font-size:14px;
+letter-spacing:1px;
+text-transform:uppercase;
+margin-bottom:8px;
+}
+
+.score{
+font-size:42px;
+font-weight:900;
+color:#ff2a2a;
+margin:28px 0;
+}
+
+.meta{
+border-top:1px solid #222;
+border-bottom:1px solid #222;
+padding:18px 0;
+display:flex;
+justify-content:space-between;
+gap:20px;
+color:#aaa;
+font-size:14px;
+margin-bottom:32px;
+}
+
+.source{
+display:inline-block;
+background:#e02020;
+padding:16px 24px;
+border-radius:4px;
+font-weight:900;
+text-transform:uppercase;
+margin-bottom:50px;
+}
+
+.newsletter{
+background:#0d0d0d;
+border:1px solid #222;
+border-radius:10px;
+padding:28px;
+margin:40px 0 70px;
+}
+
+.newsletter h2{
+font-family:'Oswald',sans-serif;
+font-size:34px;
+text-transform:uppercase;
+margin-bottom:10px;
+}
+
+.newsletter p{
+color:#bbb;
+margin-bottom:20px;
+}
+
+.newsletter form{
+display:flex;
+gap:12px;
+}
+
+.newsletter input{
+flex:1;
+padding:16px;
+background:#111;
+border:1px solid #333;
+color:#fff;
+border-radius:4px;
+}
+
+.newsletter button{
+background:#e02020;
+border:none;
+color:#fff;
+font-weight:900;
+padding:16px 22px;
+border-radius:4px;
+cursor:pointer;
+text-transform:uppercase;
+}
+
+footer{
+border-top:1px solid #222;
+padding:30px 0;
+color:#777;
+text-align:center;
+}
+
+.loading,.error{
+padding:60px 0;
+font-size:22px;
+color:#aaa;
+}
+
+@media(max-width:700px){
+h1{font-size:42px}
+.hero-img{height:260px}
+.summary{font-size:18px}
+.meta{flex-direction:column}
+.newsletter form{flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="container">
+<a href="index.html" class="logo">D<span>NN</span></a>
+</div>
+</header>
+
+<main class="container">
+<a href="index.html" class="back">← Back to Today’s Feed</a>
+
+<div id="story">
+<div class="loading">Loading story...</div>
+</div>
+</main>
+
+<footer>
+© 2026 Disturbing News Network
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://egxkcdhrappdjzskwddq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVneGtjZGhyYXBwZGp6c2t3ZGRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzI2MjEsImV4cCI6MjA5NTMwODYyMX0.OVeebryr3Ofyasmzz-rbi9g_t0CHE2Fx7YiOnyR5Qss";
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const fallbackImage = "https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200&auto=format&fit=crop";
+
+const storyContainer = document.getElementById("story");
+
+const params = new URLSearchParams(window.location.search);
+const storyId = params.get("id");
+
+async function loadStory(){
+
+if(!storyId){
+storyContainer.innerHTML = `<div class="error">No story selected.</div>`;
+return;
+}
+
+const { data, error } = await supabaseClient
+.from("stories")
+.select("*")
+.eq("id", storyId)
+.single();
+
+if(error || !data){
+storyContainer.innerHTML = `<div class="error">Story not found.</div>`;
+console.error(error);
+return;
+}
+
+document.title = `${data.title} | Disturbing News Network`;
+
+const image = data.image_url || data.source_image_url || fallbackImage;
+
+storyContainer.innerHTML = `
+<img class="hero-img" src="${escapeAttribute(image)}" alt="Story image">
+
+<div class="category">${escapeHtml(data.category || "News")}</div>
+
+<h1>${escapeHtml(data.title || "Untitled Story")}</h1>
+
+<div class="meta">
+<div>Source: ${escapeHtml(data.source_name || "Unknown")}</div>
+<div>${formatDate(data.published_at || data.created_at)}</div>
+</div>
+
+<p class="summary">${escapeHtml(data.summary || "")}</p>
+
+<div class="angle">
+<strong>DNN Angle</strong>
+${escapeHtml(data.dnn_angle || data.why_disturbing || "This story reflects another unsettling shift in modern society.")}
+</div>
+
+<div class="score">${escapeHtml(String(data.disturbing_score || "8.0"))}/10</div>
+
+${data.source_url ? `
+<a class="source" href="${escapeAttribute(data.source_url)}" target="_blank" rel="noopener noreferrer">
+Read Original Source
+</a>
+` : ""}
+
+<section class="newsletter">
+<h2>Get the Daily Disturbing Digest</h2>
+<p>Five unsettling stories summarized in your inbox.</p>
+<form id="signupForm">
+<input id="emailInput" type="email" placeholder="Enter your email" required>
+<button type="submit">Subscribe</button>
+</form>
+</section>
+`;
+
+setupNewsletter();
+}
+
+function setupNewsletter(){
+const form = document.getElementById("signupForm");
+if(!form) return;
+
+form.addEventListener("submit", async (e) => {
+e.preventDefault();
+
+const email = document.getElementById("emailInput").value.trim().toLowerCase();
+
+const { error } = await supabaseClient
+.from("subscribers")
+.insert([{ email }]);
+
+if(error){
+alert("Already subscribed or invalid email.");
+return;
+}
+
+alert("Subscribed successfully.");
+document.getElementById("emailInput").value = "";
+});
+}
+
+function formatDate(value){
+if(!value) return "recent";
+const date = new Date(value);
+if(Number.isNaN(date.getTime())) return "recent";
+return date.toLocaleDateString(undefined,{
+month:"long",
+day:"numeric",
+year:"numeric"
+});
+}
+
+function escapeHtml(value){
+return String(value || "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+function escapeAttribute(value){
+return String(value || "")
+.replaceAll("&","&amp;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+loadStory();
+</script>
+
+</body>
+</html>
