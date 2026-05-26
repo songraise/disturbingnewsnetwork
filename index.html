@@ -792,6 +792,11 @@ data.forEach(story => {
 const card = document.createElement("div");
 
 card.className = "story-card";
+  card.style.cursor = "pointer";
+
+card.addEventListener("click", () => {
+  window.location.href = `story.html?id=${story.id}`;
+});
 
 const image =
 story.image_url ||
