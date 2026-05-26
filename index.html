@@ -286,6 +286,7 @@ border-radius:10px;
 overflow:hidden;
 transition:0.3s;
 position:relative;
+cursor:pointer;
 }
 
 .story-card:hover{
@@ -555,14 +556,21 @@ width:100%;
 </div>
 
 <nav class="nav-links">
-<a href="#">Home</a>
-<a href="#">Politics</a>
-<a href="#">Crime</a>
-<a href="#">Business</a>
-<a href="#">Sports</a>
-<a href="#">Technology</a>
-<a href="#">World</a>
-<a href="#">Health</a>
+
+<a href="index.html">Home</a>
+
+<a href="category.html?name=Politics">Politics</a>
+
+<a href="category.html?name=Crime">Crime</a>
+
+<a href="category.html?name=Business">Business</a>
+
+<a href="category.html?name=Technology">Technology</a>
+
+<a href="category.html?name=World">World</a>
+
+<a href="category.html?name=Health">Health</a>
+
 </nav>
 
 </div>
@@ -609,35 +617,35 @@ Real news. Real sources. AI summarized.
 
 <div class="topic-grid">
 
-<div class="topic">
+<a href="category.html?name=Politics" class="topic">
 <div class="topic-icon">🏛️</div>
 <h4>Politics</h4>
-</div>
+</a>
 
-<div class="topic">
+<a href="category.html?name=Crime" class="topic">
 <div class="topic-icon">🚨</div>
 <h4>Crime</h4>
-</div>
+</a>
 
-<div class="topic">
+<a href="category.html?name=Business" class="topic">
 <div class="topic-icon">📉</div>
 <h4>Business</h4>
-</div>
+</a>
 
-<div class="topic">
+<a href="category.html?name=Sports" class="topic">
 <div class="topic-icon">🏈</div>
 <h4>Sports</h4>
-</div>
+</a>
 
-<div class="topic">
+<a href="category.html?name=Technology" class="topic">
 <div class="topic-icon">🧠</div>
 <h4>Technology</h4>
-</div>
+</a>
 
-<div class="topic">
+<a href="category.html?name=World" class="topic">
 <div class="topic-icon">🌎</div>
 <h4>World</h4>
-</div>
+</a>
 
 </div>
 
@@ -709,11 +717,11 @@ Disturbing News Network tracks the stories mainstream headlines mention — but 
 
 <h4>Sections</h4>
 
-<a href="#">Politics</a>
-<a href="#">Crime</a>
-<a href="#">Business</a>
-<a href="#">Technology</a>
-<a href="#">World</a>
+<a href="category.html?name=Politics">Politics</a>
+<a href="category.html?name=Crime">Crime</a>
+<a href="category.html?name=Business">Business</a>
+<a href="category.html?name=Technology">Technology</a>
+<a href="category.html?name=World">World</a>
 
 </div>
 
@@ -792,14 +800,15 @@ data.forEach(story => {
 const card = document.createElement("div");
 
 card.className = "story-card";
-  card.style.cursor = "pointer";
 
 card.addEventListener("click", () => {
-  window.location.href = `story.html?id=${story.id}`;
+window.location.href =
+`story.html?id=${story.id}`;
 });
 
 const image =
 story.image_url ||
+story.source_image_url ||
 fallbackImage;
 
 card.innerHTML = `
@@ -839,7 +848,7 @@ ${story.disturbing_score || "8.4"}/10
 <div class="meta">
 
 <div>
-${story.source || "Unknown Source"}
+${story.source_name || "Unknown Source"}
 </div>
 
 <div>
