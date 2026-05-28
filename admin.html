@@ -1,510 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-<title>DisturbingContent Admin</title>
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-admin-secret",
+  "Access-Control-Allow-Methods": "POST, OPTIONS"
+};
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
 
-<style>
+  const ADMIN_SECRET = Deno.env.get("ADMIN_SECRET");
+  const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+  const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+  if (!ADMIN_SECRET || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    return json({ error: "Missing server secrets" }, 500);
+  }
 
-body{
-  background:#050505;
-  color:#fff;
-  font-family:'Inter',sans-serif;
-}
+  const auth = req.headers.get("x-admin-secret");
 
-header{
-  padding:24px 40px;
-  border-bottom:1px solid #1f1f1f;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+  if (auth !== ADMIN_SECRET) {
+    return json({ error: "Unauthorized" }, 401);
+  }
 
-.logo{
-  font-family:'Oswald',sans-serif;
-  font-size:42px;
-  font-weight:700;
-  color:#ff3b22;
-}
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+  const body = await req.json().catch(() => ({}));
+  const action = body.action;
 
-.logo span{
-  color:#fff;
-}
+  if (action === "list") {
+    const { data, error } = await supabase
+      .from("stories")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(200);
 
-.admin-wrap{
-  max-width:1600px;
-  margin:auto;
-  padding:40px;
-}
-
-.login-box{
-  max-width:500px;
-  margin:120px auto;
-  background:#0d0d0d;
-  border:1px solid #222;
-  padding:40px;
-  border-radius:18px;
-}
-
-.login-box h1{
-  font-family:'Oswald',sans-serif;
-  font-size:42px;
-  margin-bottom:20px;
-}
-
-input{
-  width:100%;
-  padding:16px;
-  background:#121212;
-  border:1px solid #2a2a2a;
-  color:#fff;
-  border-radius:10px;
-  margin-bottom:20px;
-  font-size:16px;
-}
-
-button{
-  background:#ff3b22;
-  border:none;
-  color:#fff;
-  padding:14px 22px;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:700;
-}
-
-button:hover{
-  opacity:.9;
-}
-
-.story-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(420px,1fr));
-  gap:24px;
-}
-
-.story-card{
-  background:#0d0d0d;
-  border:1px solid #1e1e1e;
-  border-radius:18px;
-  overflow:hidden;
-}
-
-.story-image{
-  width:100%;
-  height:220px;
-  object-fit:cover;
-  background:#111;
-}
-
-.story-content{
-  padding:24px;
-}
-
-.badge{
-  display:inline-block;
-  background:#ff3b22;
-  color:#fff;
-  padding:6px 10px;
-  font-size:12px;
-  font-weight:700;
-  border-radius:6px;
-  margin-bottom:16px;
-  text-transform:uppercase;
-}
-
-.story-title{
-  font-size:30px;
-  line-height:1.15;
-  font-weight:700;
-  margin-bottom:18px;
-}
-
-.story-summary{
-  color:#bbb;
-  line-height:1.7;
-  margin-bottom:20px;
-}
-
-.meta{
-  color:#777;
-  font-size:14px;
-  margin-bottom:20px;
-}
-
-textarea, select{
-  width:100%;
-  background:#121212;
-  color:#fff;
-  border:1px solid #2a2a2a;
-  border-radius:10px;
-  padding:14px;
-  margin-bottom:14px;
-  font-family:'Inter',sans-serif;
-}
-
-.actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:20px;
-}
-
-.approve{
-  background:#18a957;
-}
-
-.reject{
-  background:#7b1111;
-}
-
-.feature{
-  background:#0047ab;
-}
-
-.delete{
-  background:#2b2b2b;
-}
-
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:30px;
-}
-
-.topbar h1{
-  font-family:'Oswald',sans-serif;
-  font-size:52px;
-}
-
-.hidden{
-  display:none;
-}
-
-.status{
-  margin-top:20px;
-  color:#ff3b22;
-}
-
-</style>
-</head>
-
-<body>
-
-<header>
-  <div class="logo">DC <span>ADMIN</span></div>
-</header>
-
-<div class="admin-wrap">
-
-  <div id="loginScreen" class="login-box">
-    <h1>Admin Login</h1>
-
-    <input
-      type="password"
-      id="passwordInput"
-      placeholder="Enter admin password"
-    />
-
-    <button onclick="login()">Enter Admin</button>
-
-    <div class="status" id="loginStatus"></div>
-  </div>
-
-  <div id="dashboard" class="hidden">
-
-    <div class="topbar">
-      <h1>Story Moderation</h1>
-
-      <button onclick="loadStories()">Refresh Stories</button>
-    </div>
-
-    <div class="story-grid" id="storyGrid"></div>
-
-  </div>
-
-</div>
-
-<script>
-
-const FUNCTION_URL =
-"https://egxkcdhrappdjzskwddq.supabase.co/functions/v1/admin-stories";
-
-let ADMIN_SECRET = "";
-
-async function login(){
-
-  ADMIN_SECRET = document.getElementById("passwordInput").value;
-
-  try{
-
-    const response = await fetch(FUNCTION_URL,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "x-admin-secret":ADMIN_SECRET
-      },
-      body:JSON.stringify({
-        action:"list"
-      })
-    });
-
-    const data = await response.json();
-
-    if(data.error){
-      document.getElementById("loginStatus").innerText =
-      "Invalid password";
-      return;
+    if (error) {
+      return json({ error }, 500);
     }
 
-    document.getElementById("loginScreen").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-
-    renderStories(data.stories);
-
-  }catch(err){
-
-    document.getElementById("loginStatus").innerText =
-    "Connection failed";
-
+    return json({
+      success: true,
+      count: data?.length || 0,
+      stories: data || []
+    });
   }
 
-}
+  if (action === "update") {
+    const { id, updates } = body;
 
-async function loadStories(){
+    if (!id || !updates) {
+      return json({ error: "Missing id or updates" }, 400);
+    }
 
-  const response = await fetch(FUNCTION_URL,{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "x-admin-secret":ADMIN_SECRET
-    },
-    body:JSON.stringify({
-      action:"list"
-    })
-  });
+    const { data, error } = await supabase
+      .from("stories")
+      .update(updates)
+      .eq("id", id)
+      .select()
+      .single();
 
-  const data = await response.json();
+    if (error) {
+      return json({ error }, 500);
+    }
 
-  renderStories(data.stories);
-
-}
-
-function renderStories(stories){
-
-  const grid = document.getElementById("storyGrid");
-
-  if(!stories || stories.length === 0){
-    grid.innerHTML = "<p>No stories found.</p>";
-    return;
+    return json({
+      success: true,
+      story: data
+    });
   }
 
-  grid.innerHTML = stories.map(story => `
+  if (action === "delete") {
+    const { id } = body;
 
-    <div class="story-card">
+    if (!id) {
+      return json({ error: "Missing id" }, 400);
+    }
 
-      <img
-        class="story-image"
-        src="${story.image_url || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200&auto=format&fit=crop'}"
-      >
+    const { error } = await supabase
+      .from("stories")
+      .delete()
+      .eq("id", id);
 
-      <div class="story-content">
+    if (error) {
+      return json({ error }, 500);
+    }
 
-        <div class="badge">
-          ${story.category || "Uncategorized"}
-        </div>
+    return json({
+      success: true,
+      deleted: id
+    });
+  }
 
-        <div class="story-title">
-          ${story.title || ""}
-        </div>
+  return json({ error: "Unknown action", received: action }, 400);
+}, {
+  verifyJwt: false
+});
 
-        <div class="story-summary">
-          ${story.summary || ""}
-        </div>
-
-        <div class="meta">
-          Source: ${story.source_name || "Unknown"}
-        </div>
-
-        <textarea
-          id="title-${story.id}"
-          rows="2"
-        >${story.title || ""}</textarea>
-
-        <textarea
-          id="summary-${story.id}"
-          rows="5"
-        >${story.summary || ""}</textarea>
-
-        <select id="category-${story.id}">
-          ${categoryOptions(story.category)}
-        </select>
-
-        <div class="actions">
-
-          <button
-            class="approve"
-            onclick="approveStory('${story.id}')">
-            Approve
-          </button>
-
-          <button
-            class="reject"
-            onclick="rejectStory('${story.id}')">
-            Reject
-          </button>
-
-          <button
-            class="feature"
-            onclick="featureStory('${story.id}')">
-            Feature
-          </button>
-
-          <button
-            onclick="saveEdits('${story.id}')">
-            Save
-          </button>
-
-          <button
-            class="delete"
-            onclick="deleteStory('${story.id}')">
-            Delete
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  `).join("");
-
-}
-
-function categoryOptions(selected){
-
-  const categories = [
-    "Trending Disturbing Content",
-    "Most Unsettling Today",
-    "Weird Internet",
-    "Disturbing AI",
-    "Corporate Absurdity",
-    "Historical Oddities",
-    "Surveillance Watch",
-    "Viral Psychology",
-    "Scams & Manipulation",
-    "Strange Technology",
-    "Disturbing News"
-  ];
-
-  return categories.map(cat => `
-    <option
-      value="${cat}"
-      ${selected === cat ? "selected" : ""}
-    >
-      ${cat}
-    </option>
-  `).join("");
-
-}
-
-async function saveEdits(id){
-
-  const title =
-  document.getElementById(`title-${id}`).value;
-
-  const summary =
-  document.getElementById(`summary-${id}`).value;
-
-  const category =
-  document.getElementById(`category-${id}`).value;
-
-  await updateStory(id,{
-    title,
-    summary,
-    category
+function json(data: any, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+      ...corsHeaders
+    }
   });
-
 }
-
-async function approveStory(id){
-
-  await updateStory(id,{
-    approved:true,
-    rejected:false
-  });
-
-}
-
-async function rejectStory(id){
-
-  await updateStory(id,{
-    approved:false,
-    rejected:true
-  });
-
-}
-
-async function featureStory(id){
-
-  await updateStory(id,{
-    featured:true
-  });
-
-}
-
-async function deleteStory(id){
-
-  if(!confirm("Delete this story?")) return;
-
-  await fetch(FUNCTION_URL,{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "x-admin-secret":ADMIN_SECRET
-    },
-    body:JSON.stringify({
-      action:"delete",
-      id
-    })
-  });
-
-  loadStories();
-
-}
-
-async function updateStory(id,updates){
-
-  await fetch(FUNCTION_URL,{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "x-admin-secret":ADMIN_SECRET
-    },
-    body:JSON.stringify({
-      action:"update",
-      id,
-      updates
-    })
-  });
-
-  loadStories();
-
-}
-
-</script>
-
-</body>
-</html>
