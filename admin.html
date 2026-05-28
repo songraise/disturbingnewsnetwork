@@ -1,111 +1,404 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disturbing Content Admin</title>
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-admin-secret",
-  "Access-Control-Allow-Methods": "POST, OPTIONS"
-};
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
 
-serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
+body{
+background:#050505;
+color:#fff;
+font-family:Arial,sans-serif;
+}
 
-  const ADMIN_SECRET = Deno.env.get("ADMIN_SECRET");
-  const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
-  const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+header{
+padding:24px 40px;
+border-bottom:1px solid #181818;
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:#000;
+}
 
-  if (!ADMIN_SECRET || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-    return json({ error: "Missing server secrets" }, 500);
-  }
+.logo{
+font-size:54px;
+font-weight:900;
+line-height:0.9;
+}
 
-  const auth = req.headers.get("x-admin-secret");
+.logo span{
+color:#ff2d2d;
+}
 
-  if (auth !== ADMIN_SECRET) {
-    return json({ error: "Unauthorized" }, 401);
-  }
+.admin-wrap{
+max-width:1400px;
+margin:auto;
+padding:40px;
+}
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-  const body = await req.json().catch(() => ({}));
-  const action = body.action;
+.login-box{
+max-width:500px;
+margin:120px auto;
+background:#0d0d0d;
+border:1px solid #1c1c1c;
+padding:40px;
+border-radius:18px;
+}
 
-  if (action === "list") {
-    const { data, error } = await supabase
-      .from("stories")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(200);
+.login-box h1{
+font-size:64px;
+margin-bottom:30px;
+}
 
-    if (error) {
-      return json({ error }, 500);
-    }
+input{
+width:100%;
+padding:18px;
+background:#080808;
+border:1px solid #222;
+color:#fff;
+font-size:18px;
+border-radius:10px;
+margin-bottom:18px;
+}
 
-    return json({
-      success: true,
-      count: data?.length || 0,
-      stories: data || []
-    });
-  }
+button{
+background:#ff2d2d;
+color:#fff;
+border:none;
+padding:14px 22px;
+font-weight:bold;
+cursor:pointer;
+border-radius:10px;
+font-size:16px;
+}
 
-  if (action === "update") {
-    const { id, updates } = body;
+button:hover{
+opacity:.9;
+}
 
-    if (!id || !updates) {
-      return json({ error: "Missing id or updates" }, 400);
-    }
+.hidden{
+display:none;
+}
 
-    const { data, error } = await supabase
-      .from("stories")
-      .update(updates)
-      .eq("id", id)
-      .select()
-      .single();
+.story-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+gap:22px;
+margin-top:30px;
+}
 
-    if (error) {
-      return json({ error }, 500);
-    }
+.story-card{
+background:#0c0c0c;
+border:1px solid #1b1b1b;
+border-radius:18px;
+overflow:hidden;
+}
 
-    return json({
-      success: true,
-      story: data
-    });
-  }
+.story-card img{
+width:100%;
+height:220px;
+object-fit:cover;
+background:#111;
+}
 
-  if (action === "delete") {
-    const { id } = body;
+.story-content{
+padding:22px;
+}
 
-    if (!id) {
-      return json({ error: "Missing id" }, 400);
-    }
+.badge{
+display:inline-block;
+font-size:12px;
+font-weight:bold;
+padding:6px 10px;
+border-radius:999px;
+background:#1b1b1b;
+color:#ff4a4a;
+margin-bottom:14px;
+text-transform:uppercase;
+}
 
-    const { error } = await supabase
-      .from("stories")
-      .delete()
-      .eq("id", id);
+.story-content h2{
+font-size:28px;
+line-height:1.15;
+margin-bottom:14px;
+}
 
-    if (error) {
-      return json({ error }, 500);
-    }
+.story-content p{
+color:#b8b8b8;
+line-height:1.6;
+margin-bottom:18px;
+}
 
-    return json({
-      success: true,
-      deleted: id
-    });
-  }
+.meta{
+font-size:13px;
+color:#888;
+margin-bottom:14px;
+}
 
-  return json({ error: "Unknown action", received: action }, 400);
-}, {
-  verifyJwt: false
+textarea{
+width:100%;
+min-height:120px;
+background:#080808;
+border:1px solid #222;
+color:#fff;
+padding:14px;
+border-radius:10px;
+margin-top:10px;
+margin-bottom:16px;
+}
+
+.actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.approve{
+background:#00b35c;
+}
+
+.reject{
+background:#a70000;
+}
+
+.delete{
+background:#333;
+}
+
+.status{
+margin-top:10px;
+color:#ff4a4a;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.count{
+color:#aaa;
+font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">
+<span>DC</span> ADMIN
+</div>
+</header>
+
+<div class="admin-wrap">
+
+<div id="loginScreen" class="login-box">
+<h1>Admin Login</h1>
+
+<input type="password" id="passwordInput" placeholder="Enter admin password">
+
+<button onclick="login()">Enter Admin</button>
+
+<div id="loginStatus" class="status"></div>
+</div>
+
+<div id="dashboard" class="hidden">
+
+<div class="topbar">
+<h1>Story Approval Dashboard</h1>
+<div class="count" id="storyCount"></div>
+</div>
+
+<div id="storyGrid" class="story-grid"></div>
+
+</div>
+
+</div>
+
+<script>
+const ADMIN_URL = "https://egxkcdhrappdjzskwddq.supabase.co/functions/v1/admin-stories";
+
+let ADMIN_SECRET = "";
+
+async function login(){
+
+ADMIN_SECRET = document.getElementById("passwordInput").value;
+
+const status = document.getElementById("loginStatus");
+
+try{
+
+const response = await fetch(ADMIN_URL,{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"x-admin-secret":ADMIN_SECRET
+},
+body:JSON.stringify({
+action:"list"
+})
 });
 
-function json(data: any, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-      ...corsHeaders
-    }
-  });
+const data = await response.json();
+
+if(!response.ok){
+status.innerHTML = data.error || "Connection failed";
+return;
 }
+
+document.getElementById("loginScreen").classList.add("hidden");
+document.getElementById("dashboard").classList.remove("hidden");
+
+renderStories(data.stories || []);
+
+}catch(err){
+status.innerHTML = "Connection failed";
+console.error(err);
+}
+}
+
+function renderStories(stories){
+
+document.getElementById("storyCount").innerHTML =
+stories.length + " stories loaded";
+
+const grid = document.getElementById("storyGrid");
+
+if(!stories.length){
+grid.innerHTML = "<p>No stories found.</p>";
+return;
+}
+
+grid.innerHTML = stories.map(story=>`
+
+<div class="story-card">
+
+<img src="${story.image_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1200'}">
+
+<div class="story-content">
+
+<div class="badge">${escapeHtml(story.category || "Disturbing")}</div>
+
+<h2>${escapeHtml(story.title || "Untitled")}</h2>
+
+<div class="meta">
+Score: ${story.disturbing_score || "8.0"}/10
+</div>
+
+<p>${escapeHtml(story.summary || "")}</p>
+
+<label>DNN Angle</label>
+
+<textarea id="angle-${story.id}">${escapeHtml(
+story.dnn_angle || story.why_disturbing || ""
+)}</textarea>
+
+<div class="actions">
+
+<button class="approve"
+onclick="approveStory('${story.id}')">
+Approve
+</button>
+
+<button class="reject"
+onclick="rejectStory('${story.id}')">
+Reject
+</button>
+
+<button class="delete"
+onclick="deleteStory('${story.id}')">
+Delete
+</button>
+
+</div>
+
+</div>
+</div>
+
+`).join("");
+}
+
+async function approveStory(id){
+
+const angle =
+document.getElementById(`angle-${id}`).value;
+
+await updateStory(id,{
+approved:true,
+rejected:false,
+dnn_angle:angle
+});
+}
+
+async function rejectStory(id){
+
+await updateStory(id,{
+approved:false,
+rejected:true
+});
+}
+
+async function deleteStory(id){
+
+if(!confirm("Delete this story?")) return;
+
+const response = await fetch(ADMIN_URL,{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"x-admin-secret":ADMIN_SECRET
+},
+body:JSON.stringify({
+action:"delete",
+id
+})
+});
+
+if(response.ok){
+location.reload();
+}
+}
+
+async function updateStory(id,updates){
+
+const response = await fetch(ADMIN_URL,{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"x-admin-secret":ADMIN_SECRET
+},
+body:JSON.stringify({
+action:"update",
+id,
+updates
+})
+});
+
+if(response.ok){
+location.reload();
+}
+}
+
+function escapeHtml(value){
+return String(value || "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+</script>
+
+</body>
+</html>
+```
