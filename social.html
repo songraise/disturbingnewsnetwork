@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Disturbing Content Social Export</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{background:#050505;color:#fff;font-family:Arial,sans-serif;padding:30px}
+h1{color:#ff3b3b}
+.card{background:#111;border:1px solid #222;border-radius:12px;padding:22px;margin-bottom:20px}
+textarea{width:100%;height:120px;background:#050505;color:#fff;border:1px solid #333;padding:14px;margin-top:10px}
+button{background:#ff3b3b;color:#fff;border:0;padding:12px 18px;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:10px}
+.meta{color:#aaa;font-size:13px}
+</style>
+</head>
+
+<body>
+
+<h1>Social Caption Export</h1>
+<p>Copy/paste these into X, TikTok, Instagram, or YouTube Shorts.</p>
+
+<div id="grid">Loading...</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://egxkcdhrappdjzskwddq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVneGtjZGhyYXBwZGp6c2t3ZGRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzI2MjEsImV4cCI6MjA5NTMwODYyMX0.OVeebryr3Ofyasmzz-rbi9g_t0CHE2Fx7YiOnyR5Qss";
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const grid = document.getElementById("grid");
+
+async function load(){
+const { data, error } = await supabaseClient
+.from("stories")
+.select("*")
+.eq("approved", true)
+.eq("rejected", false)
+.order("created_at", { ascending:false })
+.limit(20);
+
+if(error){
+grid.innerHTML = "Error loading stories.";
+return;
+}
+
+grid.innerHTML = data.map(story => {
+const caption = story.social_caption || `${story.title}\n\nWhy it belongs here: ${story.dnn_angle || story.why_disturbing || ""}\n\nRead more: https://songraise.github.io/disturbingnewsnetwork/story.html?id=${story.id}`;
+
+return `
+<div class="card">
+<h2>${escapeHtml(story.title)}</h2>
+<div class="meta">${escapeHtml(story.category || "Disturbing")} · Score ${story.disturbing_score || "8.0"}/10</div>
+
+<label>X / Threads / LinkedIn</label>
+<textarea id="x-${story.id}">${escapeHtml(caption)}</textarea>
+<button onclick="copyText('x-${story.id}')">Copy Caption</button>
+
+<label>TikTok / Shorts Hook</label>
+<textarea id="t-${story.id}">${escapeHtml("This is one of the strangest stories in the feed today: " + story.title + "\\n\\n" + (story.dnn_angle || story.why_disturbing || ""))}</textarea>
+<button onclick="copyText('t-${story.id}')">Copy Video Hook</button>
+</div>
+`;
+}).join("");
+}
+
+function copyText(id){
+const el = document.getElementById(id);
+el.select();
+document.execCommand("copy");
+alert("Copied.");
+}
+
+function escapeHtml(value){
+return String(value || "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+load();
+</script>
+
+</body>
+</html>
