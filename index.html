@@ -3,65 +3,495 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <title>Disturbing Content</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#050505;color:#fff;font-family:Inter,sans-serif}
-a{text-decoration:none;color:inherit}
-.container{width:92%;max-width:1500px;margin:auto}
-header{position:sticky;top:0;z-index:99;background:rgba(0,0,0,.94);border-bottom:1px solid #1d1d1d}
-.nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
-.logo{font-family:Oswald,sans-serif;font-size:44px;font-weight:700;text-transform:uppercase;letter-spacing:-1px}
-.logo span{color:#e42020}
-.nav-links{display:flex;gap:24px;font-size:13px;text-transform:uppercase;font-weight:800}
-.nav-links a:hover{color:#ff3333}
-.hero{padding:95px 0 75px;background:linear-gradient(rgba(0,0,0,.78),rgba(0,0,0,.96)),url("https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1800&auto=format&fit=crop") center/cover;border-bottom:1px solid #191919}
-.hero h1{font-family:Oswald,sans-serif;font-size:96px;line-height:.92;text-transform:uppercase;max-width:900px}
-.hero h1 span{color:#e42020}
-.hero p{font-size:22px;line-height:1.65;color:#d0d0d0;max-width:760px;margin:28px 0 38px}
-.btn{display:inline-block;background:#e42020;padding:18px 32px;border-radius:4px;font-weight:900;text-transform:uppercase}
-.btn:hover{background:#ff3030}
-.section{padding:68px 0}
-.section-title{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px}
-.section-title h2{font-family:Oswald,sans-serif;font-size:46px;text-transform:uppercase}
-.section-title p{color:#aaa;max-width:620px;line-height:1.5;margin-top:8px}
-.channels{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
-.channel{background:#0d0d0d;border:1px solid #202020;border-radius:10px;padding:24px;transition:.25s}
-.channel:hover{border-color:#e42020;transform:translateY(-4px)}
-.channel .icon{font-size:34px;margin-bottom:14px}
-.channel h3{font-family:Oswald,sans-serif;font-size:24px;text-transform:uppercase}
-.channel p{color:#aaa;font-size:14px;line-height:1.45;margin-top:8px}
-.stories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:28px}
-.story-card{background:#0b0b0b;border:1px solid #1c1c1c;border-radius:10px;overflow:hidden;cursor:pointer;transition:.25s}
-.story-card:hover{border-color:#e42020;transform:translateY(-5px)}
-.story-image{height:220px;position:relative;overflow:hidden}
-.story-image img{width:100%;height:100%;object-fit:cover}
-.story-category{position:absolute;top:14px;left:14px;background:#e42020;padding:8px 12px;border-radius:4px;font-size:12px;font-weight:900;text-transform:uppercase}
-.story-content{padding:24px}
-.story-title{font-family:Oswald,sans-serif;font-size:34px;line-height:1.05;margin-bottom:16px}
-.story-summary{color:#c7c7c7;line-height:1.65;margin-bottom:20px}
-.dnn-angle{background:#111;border-left:4px solid #e42020;padding:15px;margin-bottom:20px;color:#ddd;line-height:1.5}
-.dnn-angle strong{display:block;color:#ff3b3b;text-transform:uppercase;font-size:13px;margin-bottom:6px}
-.score{font-size:30px;font-weight:900;color:#ff3333;margin-bottom:16px}
-.meta{display:flex;justify-content:space-between;color:#999;font-size:13px;border-top:1px solid #222;padding-top:15px}
-.newsletter{background:#090909;border-top:1px solid #1c1c1c;border-bottom:1px solid #1c1c1c}
-.newsletter-wrap{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center}
-.newsletter h2{font-family:Oswald,sans-serif;font-size:46px;text-transform:uppercase}
-.newsletter p{color:#bbb;font-size:19px;margin-top:8px}
-.newsletter-form{display:flex;gap:12px}
-.newsletter-form input{padding:17px;width:360px;background:#111;border:1px solid #282828;color:#fff;border-radius:4px}
-.newsletter-form button{background:#e42020;color:#fff;border:0;border-radius:4px;padding:17px 28px;font-weight:900;text-transform:uppercase}
-footer{padding:48px 0;background:#030303;border-top:1px solid #151515;color:#888}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:34px}
-.footer-logo{font-family:Oswald,sans-serif;font-size:38px;text-transform:uppercase}
-.footer-logo span{color:#e42020}
-.footer-grid a{display:block;color:#aaa;margin:10px 0}
-.loading,.error{padding:48px;background:#111;border:1px solid #222;color:#aaa;border-radius:8px}
-.error{background:#260909;color:#ffb5b5;border-color:#6b1b1b}
-@media(max-width:900px){.hero h1{font-size:60px}.newsletter-wrap,.footer-grid{grid-template-columns:1fr}.newsletter-form{flex-direction:column}.newsletter-form input{width:100%}.nav-links{display:none}}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#050505;
+color:#fff;
+font-family:'Inter',sans-serif;
+overflow-x:hidden;
+}
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:
+radial-gradient(circle at top right, rgba(180,0,0,0.12), transparent 30%),
+radial-gradient(circle at bottom left, rgba(255,0,0,0.08), transparent 25%);
+pointer-events:none;
+z-index:-1;
+}
+
+a{
+text-decoration:none;
+color:inherit;
+}
+
+img{
+max-width:100%;
+display:block;
+}
+
+.container{
+width:92%;
+max-width:1500px;
+margin:auto;
+}
+
+header{
+position:sticky;
+top:0;
+z-index:999;
+background:rgba(0,0,0,0.92);
+backdrop-filter:blur(8px);
+border-bottom:1px solid #1f1f1f;
+}
+
+.nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 0;
+}
+
+.logo{
+font-family:'Oswald',sans-serif;
+font-size:46px;
+font-weight:700;
+text-transform:uppercase;
+letter-spacing:-1px;
+}
+
+.logo span{
+color:#ff2a2a;
+}
+
+.nav-links{
+display:flex;
+gap:24px;
+font-weight:700;
+font-size:13px;
+text-transform:uppercase;
+}
+
+.nav-links a{
+opacity:0.85;
+transition:.25s;
+}
+
+.nav-links a:hover{
+opacity:1;
+color:#ff2a2a;
+}
+
+.hero{
+padding:95px 0 75px;
+border-bottom:1px solid #171717;
+background:
+linear-gradient(to bottom, rgba(0,0,0,0.82), rgba(0,0,0,0.95)),
+url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1800&auto=format&fit=crop') center/cover;
+}
+
+.hero h1{
+font-family:'Oswald',sans-serif;
+font-size:96px;
+line-height:0.92;
+text-transform:uppercase;
+max-width:900px;
+margin-bottom:28px;
+}
+
+.hero h1 span{
+color:#ff2a2a;
+}
+
+.hero p{
+font-size:22px;
+line-height:1.7;
+color:#d4d4d4;
+max-width:760px;
+margin-bottom:36px;
+}
+
+.hero-btn{
+display:inline-block;
+background:#e02020;
+padding:18px 34px;
+border-radius:6px;
+font-weight:800;
+text-transform:uppercase;
+transition:.25s;
+}
+
+.hero-btn:hover{
+background:#ff3030;
+transform:translateY(-2px);
+}
+
+.section{
+padding:72px 0;
+}
+
+.section-title{
+display:flex;
+justify-content:space-between;
+align-items:end;
+margin-bottom:28px;
+}
+
+.section-title h2{
+font-family:'Oswald',sans-serif;
+font-size:48px;
+text-transform:uppercase;
+}
+
+.section-title p{
+color:#aaa;
+max-width:640px;
+line-height:1.6;
+margin-top:10px;
+}
+
+.channels{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:18px;
+}
+
+.channel{
+background:#0d0d0d;
+border:1px solid #1f1f1f;
+border-radius:10px;
+padding:24px;
+transition:.25s;
+}
+
+.channel:hover{
+border-color:#ff2a2a;
+transform:translateY(-4px);
+}
+
+.channel-icon{
+font-size:34px;
+margin-bottom:14px;
+}
+
+.channel h3{
+font-family:'Oswald',sans-serif;
+font-size:24px;
+text-transform:uppercase;
+margin-bottom:10px;
+}
+
+.channel p{
+font-size:14px;
+line-height:1.5;
+color:#aaa;
+}
+
+.stories-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:28px;
+}
+
+.story-card{
+background:#0b0b0b;
+border:1px solid #1c1c1c;
+border-radius:10px;
+overflow:hidden;
+transition:.3s;
+cursor:pointer;
+position:relative;
+}
+
+.story-card:hover{
+transform:translateY(-6px);
+border-color:#ff2a2a;
+box-shadow:0 25px 40px rgba(0,0,0,.45);
+}
+
+.featured-card{
+grid-column:span 2;
+display:grid;
+grid-template-columns:1.1fr 1fr;
+min-height:420px;
+}
+
+.featured-card .story-image{
+height:100%;
+}
+
+.featured-card .story-title{
+font-size:52px;
+}
+
+.story-image{
+height:220px;
+overflow:hidden;
+position:relative;
+}
+
+.story-image img{
+width:100%;
+height:100%;
+object-fit:cover;
+transition:.4s;
+}
+
+.story-card:hover .story-image img{
+transform:scale(1.05);
+}
+
+.story-category{
+position:absolute;
+top:14px;
+left:14px;
+background:#e11d1d;
+padding:8px 12px;
+font-size:12px;
+font-weight:800;
+border-radius:4px;
+text-transform:uppercase;
+letter-spacing:1px;
+}
+
+.story-content{
+padding:24px;
+}
+
+.featured-label{
+display:inline-block;
+background:#e42020;
+padding:8px 12px;
+font-size:12px;
+font-weight:900;
+text-transform:uppercase;
+letter-spacing:1px;
+margin-bottom:16px;
+border-radius:4px;
+}
+
+.story-title{
+font-family:'Oswald',sans-serif;
+font-size:34px;
+line-height:1.05;
+margin-bottom:18px;
+}
+
+.story-summary{
+color:#c7c7c7;
+font-size:16px;
+line-height:1.7;
+margin-bottom:22px;
+}
+
+.dnn-angle{
+background:#111;
+border-left:4px solid #ff2a2a;
+padding:16px;
+margin-bottom:22px;
+border-radius:4px;
+}
+
+.dnn-angle strong{
+display:block;
+margin-bottom:8px;
+font-size:14px;
+text-transform:uppercase;
+color:#ff3b3b;
+}
+
+.score{
+font-size:32px;
+font-weight:800;
+color:#ff2a2a;
+margin-bottom:18px;
+}
+
+.meta{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+color:#999;
+padding-top:16px;
+border-top:1px solid #1f1f1f;
+}
+
+.newsletter{
+background:#090909;
+border-top:1px solid #181818;
+border-bottom:1px solid #181818;
+}
+
+.newsletter-wrap{
+display:grid;
+grid-template-columns:1fr auto;
+gap:30px;
+align-items:center;
+}
+
+.newsletter h2{
+font-family:'Oswald',sans-serif;
+font-size:48px;
+text-transform:uppercase;
+margin-bottom:14px;
+}
+
+.newsletter p{
+font-size:20px;
+color:#bbb;
+}
+
+.newsletter-form{
+display:flex;
+gap:12px;
+}
+
+.newsletter-form input{
+padding:18px;
+width:360px;
+background:#111;
+border:1px solid #222;
+color:#fff;
+border-radius:4px;
+font-size:16px;
+}
+
+.newsletter-form button{
+background:#e02020;
+border:none;
+padding:18px 28px;
+color:#fff;
+font-weight:800;
+text-transform:uppercase;
+border-radius:4px;
+cursor:pointer;
+}
+
+footer{
+padding:60px 0;
+background:#040404;
+border-top:1px solid #151515;
+color:#777;
+}
+
+.footer-grid{
+display:grid;
+grid-template-columns:2fr 1fr 1fr;
+gap:40px;
+}
+
+.footer-logo{
+font-family:'Oswald',sans-serif;
+font-size:42px;
+margin-bottom:16px;
+}
+
+.footer-logo span{
+color:#ff2a2a;
+}
+
+.footer-column h4{
+margin-bottom:18px;
+text-transform:uppercase;
+font-size:15px;
+letter-spacing:1px;
+}
+
+.footer-column a{
+display:block;
+margin-bottom:12px;
+color:#aaa;
+}
+
+.loading{
+padding:60px;
+text-align:center;
+font-size:22px;
+color:#999;
+}
+
+.error{
+padding:30px;
+background:#2a0b0b;
+border:1px solid #661818;
+border-radius:8px;
+color:#ffb4b4;
+}
+
+@media(max-width:1100px){
+
+.featured-card{
+grid-column:auto;
+display:block;
+}
+
+.featured-card .story-image{
+height:220px;
+}
+
+.featured-card .story-title{
+font-size:34px;
+}
+
+.newsletter-wrap,
+.footer-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:700px){
+
+.nav-links{
+display:none;
+}
+
+.hero h1{
+font-size:54px;
+}
+
+.hero p{
+font-size:18px;
+}
+
+.section-title h2{
+font-size:36px;
+}
+
+.newsletter h2{
+font-size:36px;
+}
+
+.newsletter-form{
+flex-direction:column;
+}
+
+.newsletter-form input{
+width:100%;
+}
+
+}
+
 </style>
 </head>
 
@@ -69,208 +499,459 @@ footer{padding:48px 0;background:#030303;border-top:1px solid #151515;color:#888
 
 <header>
 <div class="container nav">
-<a class="logo" href="index.html">Disturbing<span>Content</span></a>
+
+<a class="logo" href="index.html">
+Disturbing<span>Content</span>
+</a>
+
 <nav class="nav-links">
 <a href="#trending">Trending</a>
 <a href="category.html?name=Disturbing AI">AI</a>
-<a href="category.html?name=Weird Internet">Weird Internet</a>
+<a href="category.html?name=Weird Internet">Internet</a>
 <a href="category.html?name=Corporate Absurdity">Corporate</a>
 <a href="category.html?name=Surveillance Watch">Surveillance</a>
 <a href="#newsletter">Digest</a>
 </nav>
+
 </div>
 </header>
 
 <section class="hero">
+
 <div class="container">
-<h1>The internet is weird.<br><span>We keep receipts.</span></h1>
+
+<h1>
+THE INTERNET IS WEIRD.<br>
+<span>WE KEEP RECEIPTS.</span>
+</h1>
+
 <p>
-Disturbing Content tracks the strange, unsettling, absurd, uncanny, and psychologically revealing stories hiding inside modern life — from AI and surveillance to internet culture, corporate weirdness, scams, social decay, and disturbing history.
+Disturbing Content tracks the strange, unsettling, absurd, uncanny, and psychologically revealing stories hiding inside modern life.
 </p>
-<a class="btn" href="#trending">Explore the Feed</a>
+
+<a href="#trending" class="hero-btn">
+Explore the Feed
+</a>
+
 </div>
+
 </section>
 
 <section class="section">
+
 <div class="container">
+
 <div class="section-title">
 <div>
 <h2>Content Channels</h2>
-<p>Not just news. Signals from the stranger parts of the modern world.</p>
+<p>
+Signals from the stranger parts of modern culture.
+</p>
 </div>
 </div>
 
 <div class="channels">
-<a class="channel" href="category.html?name=Trending Disturbing Content"><div class="icon">🔥</div><h3>Trending Disturbing</h3><p>The most unsettling items moving through the feed.</p></a>
-<a class="channel" href="category.html?name=Most Unsettling Today"><div class="icon">⚠️</div><h3>Most Unsettling</h3><p>The day’s stories with the highest psychological discomfort.</p></a>
-<a class="channel" href="category.html?name=Weird Internet"><div class="icon">🕸️</div><h3>Weird Internet</h3><p>Viral behavior, bizarre forums, strange trends, and online rituals.</p></a>
-<a class="channel" href="category.html?name=Disturbing AI"><div class="icon">🤖</div><h3>Disturbing AI</h3><p>Automation, synthetic media, algorithmic control, and uncanny tools.</p></a>
-<a class="channel" href="category.html?name=Corporate Absurdity"><div class="icon">🏢</div><h3>Corporate Absurdity</h3><p>Workplace weirdness, shrinkflation, PR disasters, and business logic gone wrong.</p></a>
-<a class="channel" href="category.html?name=Historical Oddities"><div class="icon">📜</div><h3>Historical Oddities</h3><p>Old ads, failed predictions, forgotten scares, and disturbing artifacts.</p></a>
-<a class="channel" href="category.html?name=Surveillance Watch"><div class="icon">👁️</div><h3>Surveillance Watch</h3><p>Cameras, tracking, data collection, privacy erosion, and normalized monitoring.</p></a>
-<a class="channel" href="category.html?name=Viral Psychology"><div class="icon">🧠</div><h3>Viral Psychology</h3><p>Mass behavior, anxiety loops, social experiments, persuasion, and attention traps.</p></a>
+
+<a class="channel" href="category.html?name=Trending Disturbing Content">
+<div class="channel-icon">🔥</div>
+<h3>Trending</h3>
+<p>The stories spreading through the feed right now.</p>
+</a>
+
+<a class="channel" href="category.html?name=Most Unsettling Today">
+<div class="channel-icon">⚠️</div>
+<h3>Most Unsettling</h3>
+<p>The day’s highest disturbance-score stories.</p>
+</a>
+
+<a class="channel" href="category.html?name=Weird Internet">
+<div class="channel-icon">🕸️</div>
+<h3>Weird Internet</h3>
+<p>Bizarre online behavior and strange digital culture.</p>
+</a>
+
+<a class="channel" href="category.html?name=Disturbing AI">
+<div class="channel-icon">🤖</div>
+<h3>Disturbing AI</h3>
+<p>Automation, deepfakes, synthetic media, and uncanny tech.</p>
+</a>
+
+<a class="channel" href="category.html?name=Corporate Absurdity">
+<div class="channel-icon">🏢</div>
+<h3>Corporate Absurdity</h3>
+<p>PR disasters, workplace weirdness, and business gone strange.</p>
+</a>
+
+<a class="channel" href="category.html?name=Historical Oddities">
+<div class="channel-icon">📜</div>
+<h3>Historical Oddities</h3>
+<p>Forgotten media, disturbing artifacts, and strange history.</p>
+</a>
+
+<a class="channel" href="category.html?name=Surveillance Watch">
+<div class="channel-icon">👁️</div>
+<h3>Surveillance Watch</h3>
+<p>Tracking, privacy erosion, monitoring, and data collection.</p>
+</a>
+
+<a class="channel" href="category.html?name=Viral Psychology">
+<div class="channel-icon">🧠</div>
+<h3>Viral Psychology</h3>
+<p>Mass behavior, internet persuasion, and attention traps.</p>
+</a>
+
 </div>
+
 </div>
+
 </section>
 
 <section class="section" id="trending">
+
 <div class="container">
+
 <div class="section-title">
 <div>
 <h2>Trending Disturbing Content</h2>
-<p>Automatically updated from your content engine and ranked by disturbance score.</p>
+<p>
+Automatically updated and ranked by disturbance score.
+</p>
 </div>
 </div>
 
 <div id="storiesGrid" class="stories-grid">
-<div class="loading">Loading disturbing content...</div>
+
+<div class="loading">
+Loading disturbing content...
 </div>
+
 </div>
+
+</div>
+
 </section>
 
 <section class="section newsletter" id="newsletter">
+
 <div class="container newsletter-wrap">
+
 <div>
 <h2>Daily Disturbing Digest</h2>
-<p>Five strange, unsettling, and revealing stories in your inbox.</p>
+<p>
+Five strange signals from modern life in your inbox.
+</p>
 </div>
+
 <form class="newsletter-form" id="signupForm">
-<input type="email" id="emailInput" placeholder="Enter your email" required>
-<button id="signupButton" type="submit">Subscribe</button>
+
+<input
+type="email"
+id="emailInput"
+placeholder="Enter your email"
+required
+>
+
+<button type="submit" id="signupButton">
+Subscribe
+</button>
+
 </form>
+
 </div>
+
 </section>
 
 <footer>
+
 <div class="container footer-grid">
+
 <div>
-<div class="footer-logo">Disturbing<span>Content</span></div>
-<p>Strange modern reality, curated and explained.</p>
+
+<div class="footer-logo">
+Disturbing<span>Content</span>
 </div>
-<div>
-<strong>Channels</strong>
+
+<p>
+Strange modern reality, curated and explained.
+</p>
+
+</div>
+
+<div class="footer-column">
+
+<h4>Channels</h4>
+
 <a href="category.html?name=Disturbing AI">Disturbing AI</a>
 <a href="category.html?name=Weird Internet">Weird Internet</a>
 <a href="category.html?name=Corporate Absurdity">Corporate Absurdity</a>
+
 </div>
-<div>
-<strong>Brand</strong>
+
+<div class="footer-column">
+
+<h4>Platform</h4>
+
 <a href="#">Daily Digest</a>
 <a href="#">Submissions</a>
 <a href="#">Archive</a>
+
 </div>
+
 </div>
+
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const SUPABASE_URL = "https://egxkcdhrappdjzskwddq.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVneGtjZGhyYXBwZGp6c2t3ZGRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzI2MjEsImV4cCI6MjA5NTMwODYyMX0.OVeebryr3Ofyasmzz-rbi9g_t0CHE2Fx7YiOnyR5Qss";
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const storiesGrid = document.getElementById("storiesGrid");
+const SUPABASE_URL =
+"https://egxkcdhrappdjzskwddq.supabase.co";
 
-const fallbackImage = "https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200&auto=format&fit=crop";
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVneGtjZGhyYXBwZGp6c2t3ZGRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzI2MjEsImV4cCI6MjA5NTMwODYyMX0.OVeebryr3Ofyasmzz-rbi9g_t0CHE2Fx7YiOnyR5Qss";
+
+const supabaseClient =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
+
+const storiesGrid =
+document.getElementById("storiesGrid");
 
 async function loadStories(){
-const { data, error } = await supabaseClient
+
+const { data, error } =
+await supabaseClient
 .from("stories")
 .select("*")
 .eq("approved", true)
 .eq("rejected", false)
+.order("featured", { ascending:false })
 .order("disturbing_score", { ascending:false })
 .order("created_at", { ascending:false })
 .limit(18);
 
 if(error){
-storiesGrid.innerHTML = `<div class="error">Failed to load content.</div>`;
+
+storiesGrid.innerHTML =
+`<div class="error">Failed to load content.</div>`;
+
 console.error(error);
 return;
+
 }
 
 if(!data || data.length === 0){
-storiesGrid.innerHTML = `<div class="error">No content found yet.</div>`;
+
+storiesGrid.innerHTML =
+`<div class="error">No approved content found yet.</div>`;
+
 return;
+
 }
 
 storiesGrid.innerHTML = "";
 
-data.forEach(story => {
-const card = document.createElement("div");
-card.className = "story-card";
+data.forEach((story, index) => {
+
+const card =
+document.createElement("div");
+
+card.className =
+story.featured && index === 0
+? "story-card featured-card"
+: "story-card";
+
 card.addEventListener("click", () => {
-window.location.href = `story.html?id=${story.id}`;
+
+window.location.href =
+`story.html?id=${story.id}`;
+
 });
 
-const image = story.image_url || story.source_image_url || fallbackImage;
+const image = getStoryImage(story);
 
 card.innerHTML = `
+
 <div class="story-image">
+
 <img src="${escapeAttribute(image)}">
-<div class="story-category">${escapeHtml(story.category || "Disturbing")}</div>
+
+<div class="story-category">
+${escapeHtml(story.category || "Disturbing")}
 </div>
+
+</div>
+
 <div class="story-content">
-<h2 class="story-title">${escapeHtml(story.title || "Untitled")}</h2>
-<p class="story-summary">${escapeHtml(story.summary || "")}</p>
-<div class="dnn-angle"><strong>Why it belongs here</strong>${escapeHtml(story.dnn_angle || story.why_disturbing || "A strange signal from modern life.")}</div>
-<div class="score">${escapeHtml(String(story.disturbing_score || "8.0"))}/10</div>
-<div class="meta">
-<div>${escapeHtml(story.source_name || "Unknown Source")}</div>
-<div>${formatDate(story.created_at)}</div>
+
+${story.featured && index === 0
+? `<div class="featured-label">Featured Disturbance</div>`
+: ""}
+
+<h2 class="story-title">
+${escapeHtml(story.title || "Untitled")}
+</h2>
+
+<p class="story-summary">
+${escapeHtml(story.summary || "")}
+</p>
+
+<div class="dnn-angle">
+
+<strong>Why it belongs here</strong>
+
+${escapeHtml(
+story.dnn_angle ||
+story.why_disturbing ||
+"A strange signal from modern life."
+)}
+
 </div>
+
+<div class="score">
+${escapeHtml(String(story.disturbing_score || "8.0"))}/10
+</div>
+
+<div class="meta">
+
+<div>
+${escapeHtml(story.source_name || "Unknown Source")}
+</div>
+
+<div>
+${formatDate(story.created_at)}
+</div>
+
+</div>
+
 </div>
 `;
 
 storiesGrid.appendChild(card);
+
 });
+
 }
 
-const signupForm = document.getElementById("signupForm");
-signupForm.addEventListener("submit", async (e) => {
-e.preventDefault();
-const emailInput = document.getElementById("emailInput");
-const signupButton = document.getElementById("signupButton");
-signupButton.innerText = "Submitting...";
-const email = emailInput.value.trim().toLowerCase();
+function getStoryImage(story){
 
-const { error } = await supabaseClient.from("subscribers").insert([{ email }]);
+if(story.image_url) return story.image_url;
+if(story.source_image_url) return story.source_image_url;
+
+const category =
+String(story.category || "").toLowerCase();
+
+const images = {
+
+"disturbing ai":
+"https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1200&auto=format&fit=crop",
+
+"weird internet":
+"https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop",
+
+"corporate absurdity":
+"https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1200&auto=format&fit=crop",
+
+"surveillance watch":
+"https://images.unsplash.com/photo-1557597774-9d475d4d5f33?q=80&w=1200&auto=format&fit=crop",
+
+"viral psychology":
+"https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=1200&auto=format&fit=crop",
+
+"scams & manipulation":
+"https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1200&auto=format&fit=crop",
+
+"strange technology":
+"https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
+
+"historical oddities":
+"https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1200&auto=format&fit=crop"
+
+};
+
+return images[category]
+|| "https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200&auto=format&fit=crop";
+
+}
+
+const signupForm =
+document.getElementById("signupForm");
+
+signupForm.addEventListener("submit", async (e) => {
+
+e.preventDefault();
+
+const emailInput =
+document.getElementById("emailInput");
+
+const signupButton =
+document.getElementById("signupButton");
+
+signupButton.innerText = "Submitting...";
+
+const email =
+emailInput.value.trim().toLowerCase();
+
+const { error } =
+await supabaseClient
+.from("subscribers")
+.insert([{ email }]);
 
 if(error){
+
 alert("Already subscribed or invalid email.");
+
 signupButton.innerText = "Subscribe";
+
 return;
+
 }
 
 alert("Subscribed successfully.");
+
 emailInput.value = "";
+
 signupButton.innerText = "Subscribe";
+
 });
 
 function formatDate(value){
+
 if(!value) return "recent";
+
 const date = new Date(value);
+
 if(Number.isNaN(date.getTime())) return "recent";
+
 return date.toLocaleDateString();
+
 }
 
 function escapeHtml(value){
+
 return String(value || "")
 .replaceAll("&","&amp;")
 .replaceAll("<","&lt;")
 .replaceAll(">","&gt;")
 .replaceAll('"',"&quot;")
 .replaceAll("'","&#039;");
+
 }
 
 function escapeAttribute(value){
+
 return String(value || "")
 .replaceAll("&","&amp;")
 .replaceAll('"',"&quot;")
 .replaceAll("'","&#039;");
+
 }
 
 loadStories();
+
 </script>
 
 </body>
